@@ -1,0 +1,10 @@
+{
+  "togglApiToken": "your_toggl_api_token_here",
+  "workspaceId": 1234567,
+  "hoursPerWeek": 35,
+  "hoursPerDay": 7,
+  "customHolidays": [
+    "2024-12-24",
+    "2024-12-31"
+  ]
+}
