@@ -741,13 +741,18 @@ function renderHeatmap(daily) {
   // Required hours for scaling (from first workday)
   const reqH = daily.find(d => d.requiredHours > 0)?.requiredHours || 7;
 
+  // Local date formatter (avoids toISOString UTC shift)
+  function fmtDate(d) {
+    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  }
+
   // Build week columns
   const weeks = [];
   let cur = new Date(startMonday);
   while (true) {
     const week = [];
     for (let i = 0; i < 7; i++) {
-      const ds = cur.toISOString().slice(0, 10);
+      const ds = fmtDate(cur);
       week.push({ date: ds, data: dailyMap[ds] || null });
       cur.setDate(cur.getDate() + 1);
     }
@@ -755,33 +760,37 @@ function renderHeatmap(daily) {
     if (cur > new Date(daily[daily.length - 1].date + 'T23:59:59')) break;
   }
 
-  // Month labels
+  // Month labels — position each label to span its weeks
   const monthsDiv = document.createElement('div');
   monthsDiv.className = 'heatmap-months';
   let lastMonth = -1;
   const colWidth = 16; // 13px cell + 3px gap
+  const monthStarts = [];
   for (let wi = 0; wi < weeks.length; wi++) {
-    // Use Thursday of the week to determine month
     const thu = weeks[wi][3];
     if (thu && thu.data) {
       const m = new Date(thu.date + 'T00:00:00').getMonth();
       if (m !== lastMonth) {
-        const label = document.createElement('div');
-        label.className = 'heatmap-month-label';
-        label.textContent = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][m];
-        label.style.width = colWidth + 'px';
-        label.style.marginLeft = (wi > 0 && lastMonth === -1 ? 0 : 0) + 'px';
-        // Position based on week index
-        if (lastMonth !== -1) {
-          // fill gap
-          const gap = document.createElement('div');
-          gap.style.flex = '1';
-          monthsDiv.appendChild(gap);
-        }
-        monthsDiv.appendChild(label);
+        monthStarts.push({ month: m, weekIndex: wi });
         lastMonth = m;
       }
     }
+  }
+  for (let i = 0; i < monthStarts.length; i++) {
+    const ms = monthStarts[i];
+    const nextStart = i + 1 < monthStarts.length ? monthStarts[i + 1].weekIndex : weeks.length;
+    if (i === 0 && ms.weekIndex > 0) {
+      const spacer = document.createElement('div');
+      spacer.style.width = (ms.weekIndex * colWidth) + 'px';
+      spacer.style.flexShrink = '0';
+      monthsDiv.appendChild(spacer);
+    }
+    const label = document.createElement('div');
+    label.className = 'heatmap-month-label';
+    label.textContent = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][ms.month];
+    label.style.width = ((nextStart - ms.weekIndex) * colWidth) + 'px';
+    label.style.flexShrink = '0';
+    monthsDiv.appendChild(label);
   }
 
   const gridDiv = document.createElement('div');
