@@ -39,11 +39,11 @@ function validateConfig(config: unknown): config is Config {
     throw new Error("customHolidays must be an array");
   }
 
-  const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+  const dateRegex = /^(\d{4}|\*)-\d{2}-\d{2}$/;
   for (const holiday of c.customHolidays) {
     if (typeof holiday !== "string" || !dateRegex.test(holiday)) {
       throw new Error(
-        `Invalid date format in customHolidays: ${holiday}. Expected YYYY-MM-DD`
+        `Invalid date format in customHolidays: ${holiday}. Expected YYYY-MM-DD or *-MM-DD`
       );
     }
   }

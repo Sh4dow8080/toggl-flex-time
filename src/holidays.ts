@@ -115,11 +115,12 @@ export function getAllHolidays(
 ): string[] {
   const danishHolidays = getDanishHolidays(year);
 
-  // Filter custom holidays to only include those in the given year
+  // Expand custom holidays for the given year
+  // Supports both "YYYY-MM-DD" (specific year) and "*-MM-DD" (every year)
   const yearPrefix = `${year}-`;
-  const customHolidaysForYear = customHolidays.filter((h) =>
-    h.startsWith(yearPrefix)
-  );
+  const customHolidaysForYear = customHolidays
+    .filter((h) => h.startsWith(yearPrefix) || h.startsWith("*-"))
+    .map((h) => (h.startsWith("*-") ? `${year}${h.slice(1)}` : h));
 
   // Merge and deduplicate
   const allHolidays = new Set([...danishHolidays, ...customHolidaysForYear]);

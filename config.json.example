@@ -4,7 +4,7 @@
   "hoursPerWeek": 35,
   "hoursPerDay": 7,
   "customHolidays": [
-    "2024-12-24",
-    "2024-12-31"
+    "*-12-24",
+    "*-12-31"
   ]
 }
