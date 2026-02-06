@@ -1016,11 +1016,14 @@ function renderMonthlyCharts(monthlyTrend, weekly) {
   const monthlyActual = {};
   const monthlyRequired = {};
   for (const w of weekly) {
-    // Use start date's month
-    const m = new Date(w.period.start + 'T00:00:00').getMonth();
+    // Use start date's month + year to match trend labels (e.g. "Jan '26")
+    const dt = new Date(w.period.start + 'T00:00:00');
+    const m = dt.getMonth();
     const monthName = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][m];
-    monthlyActual[monthName] = (monthlyActual[monthName] || 0) + w.actualHours;
-    monthlyRequired[monthName] = (monthlyRequired[monthName] || 0) + w.requiredHours;
+    const shortYear = String(dt.getFullYear()).slice(-2);
+    const key = monthName + " '" + shortYear;
+    monthlyActual[key] = (monthlyActual[key] || 0) + w.actualHours;
+    monthlyRequired[key] = (monthlyRequired[key] || 0) + w.requiredHours;
   }
 
   // Grouped bar chart

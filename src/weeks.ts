@@ -159,13 +159,17 @@ export function buildTrendJson(
     return {
       weekNumber: week.weekNumber,
       year: week.year,
+      startYear: week.startDate.getFullYear(),
       month: week.startDate.getMonth(),
       delta: result.flexBalance,
     };
   });
 
   if (granularity === "monthly") {
-    // Aggregate by month
+    // Aggregate by month using the effective start date's year/month
+    // (week.year comes from the Monday which may be in the prior year for
+    //  weeks that straddle a year boundary, but startDate is clamped to the
+    //  actual date range)
     const monthlyMap = new Map<string, { label: string; delta: number }>();
     const monthNames: Record<number, string> = {
       0: "Jan", 1: "Feb", 2: "Mar", 3: "Apr", 4: "May", 5: "Jun",
@@ -173,12 +177,13 @@ export function buildTrendJson(
     };
 
     for (const w of weeklyData) {
-      const key = `${w.year}-${w.month}`;
+      const key = `${w.startYear}-${w.month}`;
       const existing = monthlyMap.get(key);
       if (existing) {
         existing.delta += w.delta;
       } else {
-        monthlyMap.set(key, { label: monthNames[w.month] ?? "Unknown", delta: w.delta });
+        const shortYear = String(w.startYear).slice(-2);
+        monthlyMap.set(key, { label: `${monthNames[w.month]} '${shortYear}`, delta: w.delta });
       }
     }
 
