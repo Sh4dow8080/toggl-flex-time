@@ -8,6 +8,7 @@
 import { existsSync, readFileSync, writeFileSync } from "fs";
 import { join } from "path";
 import type { SimplifiedEntry } from "./toggl";
+import { getDataDir } from "./paths";
 
 export interface CacheData {
   version: 1;
@@ -25,7 +26,7 @@ const FETCH_WINDOW_DAYS = 60;
  * Get the path to the cache file (same directory as config.json).
  */
 function getCachePath(): string {
-  return join(process.cwd(), CACHE_FILE);
+  return join(getDataDir(), CACHE_FILE);
 }
 
 /**

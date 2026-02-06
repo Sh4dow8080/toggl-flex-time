@@ -1,5 +1,6 @@
 import { readFileSync, existsSync } from "fs";
 import { join } from "path";
+import { getDataDir } from "./paths";
 
 export interface Config {
   togglApiToken: string;
@@ -51,12 +52,12 @@ function validateConfig(config: unknown): config is Config {
 }
 
 export function loadConfig(): Config {
-  const configPath = join(process.cwd(), CONFIG_FILE);
+  const configPath = join(getDataDir(), CONFIG_FILE);
 
   if (!existsSync(configPath)) {
     throw new Error(
       `Config file not found: ${configPath}\n` +
-        `Please create a config.json file based on config.json.example`
+        `Please create a config.json file at that location (see config.json.example)`
     );
   }
 

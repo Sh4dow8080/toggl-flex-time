@@ -30,7 +30,14 @@ Download `flex-windows-x64.exe` from the releases page and place it somewhere on
 
 ## Setup
 
-Create a `config.json` file in the same directory as the binary (or the project root if running from source):
+Create a `config.json` file in the data directory:
+
+| Platform | Location |
+|---|---|
+| macOS / Linux | `~/.config/toggl-flex-time/config.json` |
+| Windows | `%APPDATA%\toggl-flex-time\config.json` |
+
+The directory is created automatically on first run.
 
 ```json
 {
@@ -50,6 +57,8 @@ Create a `config.json` file in the same directory as the binary (or the project 
 - **`hoursPerWeek`** — Your contracted weekly hours
 - **`hoursPerDay`** — Your contracted daily hours
 - **`customHolidays`** — Additional days off not covered by Danish public holidays (format: `YYYY-MM-DD`)
+
+The cache (`cache.json`) is stored in the same directory automatically.
 
 ## Usage
 
