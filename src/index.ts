@@ -13,6 +13,7 @@
  *   bun run flex --web    - Open web dashboard in browser
  */
 
+import { Command } from "commander";
 import { loadConfig } from "./config";
 import { getAllHolidays } from "./holidays";
 import { getTimeEntries } from "./toggl";
@@ -35,6 +36,15 @@ import {
 } from "./weeks";
 import { VERSION } from "./version";
 import { checkForUpdate, performUpdate, cleanupOldBinary } from "./updater";
+
+interface MainOptions {
+  weekly: boolean;
+  json: boolean;
+  web: boolean;
+  includeToday: boolean;
+  showTrend: boolean;
+  trendGranularity: "weekly" | "monthly";
+}
 
 // ANSI color codes
 const colors = {
@@ -134,27 +144,8 @@ function displayWeeklyBreakdown(
   );
 }
 
-function parseTrendArg(): { show: boolean; granularity: "weekly" | "monthly" } {
-  const trendIndex = process.argv.findIndex(arg => arg === "--trend" || arg === "-t");
-  if (trendIndex === -1) {
-    return { show: false, granularity: "weekly" };
-  }
-
-  // Check if next arg is "monthly" or "weekly"
-  const nextArg = process.argv[trendIndex + 1];
-  if (nextArg === "monthly") {
-    return { show: true, granularity: "monthly" };
-  }
-  return { show: true, granularity: "weekly" };
-}
-
-
-async function main() {
-  const showWeekly = process.argv.includes("--weekly") || process.argv.includes("-w");
-  const showJson = process.argv.includes("--json") || process.argv.includes("-j");
-  const showWeb = process.argv.includes("--web");
-  const includeToday = process.argv.includes("--include-today");
-  const trendArg = parseTrendArg();
+async function main(opts: MainOptions) {
+  const { weekly: showWeekly, json: showJson, web: showWeb, includeToday } = opts;
 
   try {
     if (!showJson) {
@@ -269,14 +260,14 @@ async function main() {
       return;
     }
 
-    if (trendArg.show) {
+    if (opts.showTrend) {
       // Trend chart view
       const weeks = getWeekRanges(startOfYear, endDate, entries);
       if (showJson) {
-        const jsonOutput = buildTrendJson(weeks, config.hoursPerDay, allHolidays, trendArg.granularity);
+        const jsonOutput = buildTrendJson(weeks, config.hoursPerDay, allHolidays, opts.trendGranularity);
         console.log(JSON.stringify(jsonOutput, null, 2));
       } else {
-        console.log(renderTrendChart(weeks, config.hoursPerDay, allHolidays, trendArg.granularity));
+        console.log(renderTrendChart(weeks, config.hoursPerDay, allHolidays, opts.trendGranularity));
       }
     } else if (showWeekly) {
       // Weekly breakdown view
@@ -354,24 +345,44 @@ async function main() {
 // Clean up leftover .old binary from previous update
 cleanupOldBinary();
 
-// Handle --version / -v
-if (process.argv.includes("--version") || process.argv.includes("-v")) {
-  console.log(`toggl-flex-time v${VERSION}`);
-  process.exit(0);
-}
+const program = new Command()
+  .name("toggl-flex-time")
+  .description("Calculate flex time from Toggl Track time entries")
+  .version(`toggl-flex-time v${VERSION}`, "-v, --version")
+  .option("-w, --weekly", "Show per-week breakdown")
+  .option("-j, --json", "Output results as JSON")
+  .option("--web", "Open web dashboard in browser")
+  .option("--include-today", "Include today in the calculation")
+  .option("-t, --trend [granularity]", "Show trend chart (optional: weekly or monthly)")
+  .option("--update", "Update to the latest version")
+  .action(async (rawOpts) => {
+    if (rawOpts.update) {
+      try {
+        await performUpdate();
+        process.exit(0);
+      } catch (err) {
+        console.error(`${colors.red}Update failed: ${err instanceof Error ? err.message : err}${colors.reset}`);
+        process.exit(1);
+      }
+      return;
+    }
 
-// Handle --update
-if (process.argv.includes("--update")) {
-  performUpdate()
-    .then(() => process.exit(0))
-    .catch((err) => {
-      console.error(`${colors.red}Update failed: ${err instanceof Error ? err.message : err}${colors.reset}`);
-      process.exit(1);
-    });
-} else {
-  // Run main with a concurrent update check
-  const updateCheck = checkForUpdate();
-  main().then(async () => {
+    const trendValue = rawOpts.trend;
+    const showTrend = trendValue !== undefined;
+    const trendGranularity: "weekly" | "monthly" =
+      trendValue === "monthly" ? "monthly" : "weekly";
+
+    const opts: MainOptions = {
+      weekly: rawOpts.weekly ?? false,
+      json: rawOpts.json ?? false,
+      web: rawOpts.web ?? false,
+      includeToday: rawOpts.includeToday ?? false,
+      showTrend,
+      trendGranularity,
+    };
+
+    const updateCheck = checkForUpdate();
+    await main(opts);
     const update = await updateCheck;
     if (update) {
       console.log(
@@ -379,4 +390,5 @@ if (process.argv.includes("--update")) {
       );
     }
   });
-}
+
+await program.parseAsync(process.argv);

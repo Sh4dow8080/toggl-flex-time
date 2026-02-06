@@ -2,7 +2,7 @@ Default to using Bun instead of Node.js. Bun automatically loads .env, so don't 
 
 ## Architecture
 
-- CLI: `src/` — Pure TypeScript, no framework. Manual `process.argv` parsing (no CLI library).
+- CLI: `src/` — TypeScript with Commander.js for argument parsing.
 - Web dashboard: `web/` — React + Vite SPA, built and embedded into the CLI binary.
 - Config: `config.json` (gitignored) — Toggl API token, workspace ID, hours/day, hours/week, custom holidays. See `config.json.example`.
 - Tests: `tests/` — Bun's built-in test runner, no mocking libraries.
