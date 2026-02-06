@@ -383,10 +383,13 @@ function getDashboardHtml(defaultIncludeToday: boolean): string {
   .heatmap-cell[data-hours] { cursor: default; }
   .heatmap-cell.empty { background: transparent; }
   .heatmap-cell.level-0 { background: var(--bg-surface); }
-  .heatmap-cell.level-1 { background: #0e4429; }
-  .heatmap-cell.level-2 { background: #006d32; }
-  .heatmap-cell.level-3 { background: #26a641; }
-  .heatmap-cell.level-4 { background: #39d353; }
+  .heatmap-cell.under-1 { background: #4a2000; }
+  .heatmap-cell.under-2 { background: #7a3400; }
+  .heatmap-cell.near { background: #1a3a2a; }
+  .heatmap-cell.met { background: #006d32; }
+  .heatmap-cell.slight-over { background: #15803d; }
+  .heatmap-cell.over-1 { background: #26a641; }
+  .heatmap-cell.over-2 { background: #39d353; }
   .heatmap-cell.holiday { background: #2d1f00; border: 1px solid #4a3500; }
   .heatmap-cell.weekend { background: #1a1a25; }
   .heatmap-legend {
@@ -735,8 +738,8 @@ function renderHeatmap(daily) {
   const dailyMap = {};
   for (const d of daily) dailyMap[d.date] = d;
 
-  // Max hours for scaling
-  const maxH = Math.max(...daily.map(d => d.actualHours), 1);
+  // Required hours for scaling (from first workday)
+  const reqH = daily.find(d => d.requiredHours > 0)?.requiredHours || 7;
 
   // Build week columns
   const weeks = [];
@@ -812,12 +815,16 @@ function renderHeatmap(daily) {
       } else if (day.data.isHoliday && day.data.actualHours === 0) {
         cell.classList.add('holiday');
       } else {
-        const ratio = day.data.actualHours / maxH;
-        if (ratio === 0) cell.classList.add('level-0');
-        else if (ratio < 0.25) cell.classList.add('level-1');
-        else if (ratio < 0.5) cell.classList.add('level-2');
-        else if (ratio < 0.75) cell.classList.add('level-3');
-        else cell.classList.add('level-4');
+        const actual = day.data.actualHours;
+        const required = day.data.requiredHours || reqH;
+        if (actual === 0) cell.classList.add('level-0');
+        else if (actual < required * 0.75) cell.classList.add('under-1');
+        else if (actual < required * 0.93) cell.classList.add('under-2');
+        else if (actual < required) cell.classList.add('near');
+        else if (actual < required * 1.07) cell.classList.add('met');
+        else if (actual < required * 1.15) cell.classList.add('slight-over');
+        else if (actual < required * 1.3) cell.classList.add('over-1');
+        else cell.classList.add('over-2');
       }
       if (day.data) {
         cell.setAttribute('data-hours', day.data.actualHours.toFixed(1));
@@ -846,13 +853,15 @@ function renderHeatmap(daily) {
   const legend = document.createElement('div');
   legend.className = 'heatmap-legend';
   legend.innerHTML =
-    '<span class="heatmap-legend-label">Less</span>' +
-    '<div class="heatmap-cell level-0"></div>' +
-    '<div class="heatmap-cell level-1"></div>' +
-    '<div class="heatmap-cell level-2"></div>' +
-    '<div class="heatmap-cell level-3"></div>' +
-    '<div class="heatmap-cell level-4"></div>' +
-    '<span class="heatmap-legend-label">More</span>';
+    '<span class="heatmap-legend-label">Under</span>' +
+    '<div class="heatmap-cell under-1"></div>' +
+    '<div class="heatmap-cell under-2"></div>' +
+    '<div class="heatmap-cell near"></div>' +
+    '<div class="heatmap-cell met"></div>' +
+    '<div class="heatmap-cell slight-over"></div>' +
+    '<div class="heatmap-cell over-1"></div>' +
+    '<div class="heatmap-cell over-2"></div>' +
+    '<span class="heatmap-legend-label">Over</span>';
 
   container.appendChild(monthsDiv);
   container.appendChild(gridDiv);
