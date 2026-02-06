@@ -364,7 +364,6 @@ const program = new Command()
         console.error(`${colors.red}Update failed: ${err instanceof Error ? err.message : err}${colors.reset}`);
         process.exit(1);
       }
-      return;
     }
 
     const trendValue = rawOpts.trend;
