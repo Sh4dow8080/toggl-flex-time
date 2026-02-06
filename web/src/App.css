@@ -325,7 +325,6 @@ body::before {
 
 /* Tooltip */
 .tooltip {
-  display: none;
   position: fixed;
   background: #1e1e2e;
   border: 1px solid var(--border);

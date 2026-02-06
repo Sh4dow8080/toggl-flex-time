@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { createPortal } from "react-dom";
 import type { DailyData } from "../types";
 
 interface HeatmapProps {
@@ -145,7 +146,7 @@ export function Heatmap({ daily }: HeatmapProps) {
                     setTooltip({
                       text: info,
                       x: r.left + r.width / 2,
-                      y: r.top - 40,
+                      y: r.top - 8,
                     });
                   }}
                   onMouseLeave={() => setTooltip(null)}
@@ -169,22 +170,24 @@ export function Heatmap({ daily }: HeatmapProps) {
         <span className="heatmap-legend-label">Over</span>
       </div>
 
-      {/* Tooltip */}
-      {tooltip && (
-        <div
-          className="tooltip"
-          style={{
-            display: "block",
-            position: "fixed",
-            left: tooltip.x,
-            top: tooltip.y,
-            transform: "translateX(-50%)",
-            whiteSpace: "pre",
-          }}
-        >
-          {tooltip.text}
-        </div>
-      )}
+      {/* Tooltip — portaled to body to escape ancestor transforms that break position:fixed */}
+      {tooltip &&
+        createPortal(
+          <div
+            className="tooltip"
+            style={{
+              display: "block",
+              position: "fixed",
+              left: tooltip.x,
+              top: tooltip.y,
+              transform: "translate(-50%, -100%)",
+              whiteSpace: "pre",
+            }}
+          >
+            {tooltip.text}
+          </div>,
+          document.body
+        )}
     </div>
   );
 }
