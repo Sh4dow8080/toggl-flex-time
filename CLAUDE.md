@@ -7,10 +7,6 @@ Default to using Bun instead of Node.js. Bun automatically loads .env, so don't 
 - Config: `config.json` (gitignored) — Toggl API token, workspace ID, hours/day, hours/week, custom holidays. See `config.json.example`.
 - Tests: `tests/` — Bun's built-in test runner, no mocking libraries.
 
-## Secrets
-
-`config.json` contains a Toggl API token. Never commit it or log its contents.
-
 ## Key Patterns
 
 - Config and cache files live in `~/.config/toggl-flex-time/` (macOS/Linux) or `%APPDATA%/toggl-flex-time/` (Windows), not the project root. See `src/paths.ts`.
