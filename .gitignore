@@ -31,6 +31,9 @@ report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 config.json
 cache.json
 
+# Generated dashboard embed
+src/generated/
+
 # IntelliJ based IDEs
 .idea
 

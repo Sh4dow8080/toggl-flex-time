@@ -34,6 +34,9 @@ jobs:
           sed -i.bak "s/export const VERSION = \".*\"/export const VERSION = \"${VERSION}\"/" src/version.ts
           rm -f src/version.ts.bak
 
+      - name: Build web dashboard
+        run: bun run build:web
+
       - name: Compile binary
         run: bun build --compile --target=${{ matrix.target }} ./src/index.ts --outfile ${{ matrix.artifact }}
 

@@ -8,9 +8,10 @@
     "flex": "src/index.ts"
   },
   "scripts": {
-    "flex": "bun run src/index.ts",
-    "compile:win": "bun build --compile --target=bun-windows-x64 ./src/index.ts --outfile flex-windows-x64.exe",
-    "compile:mac": "bun build --compile --target=bun-darwin-x64 ./src/index.ts --outfile flex-darwin-x64"
+    "flex": "bun run build:web && bun run src/index.ts",
+    "build:web": "cd web && bun install && bunx vite build && cd .. && bun scripts/embed-dashboard.ts",
+    "compile:win": "bun run build:web && bun build --compile --target=bun-windows-x64 ./src/index.ts --outfile flex-windows-x64.exe",
+    "compile:mac": "bun run build:web && bun build --compile --target=bun-darwin-x64 ./src/index.ts --outfile flex-darwin-x64"
   },
   "devDependencies": {
     "@types/bun": "latest"
