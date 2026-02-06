@@ -3,6 +3,7 @@ import {
   mergeEntries,
   calculateFetchRange,
   formatDateForCache,
+  type CacheData,
 } from "../src/cache";
 import type { SimplifiedEntry } from "../src/toggl";
 
@@ -35,9 +36,7 @@ describe("mergeEntries", () => {
       { date: "2025-01-01", durationSeconds: 3600 },
       { date: "2025-01-02", durationSeconds: 3600 },
     ];
-    const fresh: SimplifiedEntry[] = [
-      { date: "2025-01-06", durationSeconds: 7200 },
-    ];
+    const fresh: SimplifiedEntry[] = [{ date: "2025-01-06", durationSeconds: 7200 }];
     const result = mergeEntries(cached, fresh, "2025-01-06");
     expect(result).toEqual([
       { date: "2025-01-01", durationSeconds: 3600 },
@@ -71,9 +70,7 @@ describe("mergeEntries", () => {
   });
 
   test("returns sorted results", () => {
-    const cached: SimplifiedEntry[] = [
-      { date: "2025-01-10", durationSeconds: 100 },
-    ];
+    const cached: SimplifiedEntry[] = [{ date: "2025-01-10", durationSeconds: 100 }];
     const fresh: SimplifiedEntry[] = [
       { date: "2025-01-15", durationSeconds: 200 },
       { date: "2025-01-12", durationSeconds: 300 },
@@ -89,7 +86,7 @@ describe("calculateFetchRange", () => {
   const endDate = new Date(2025, 5, 15); // June 15
 
   test("returns full fetch from year start when cache is empty", () => {
-    const cache = { version: 1, lastUpdated: "", entries: [] };
+    const cache = { version: 1, lastUpdated: "", entries: [] } satisfies CacheData;
     const result = calculateFetchRange(cache, yearStart, endDate);
     expect(result.startDate).toEqual(yearStart);
     expect(result.endDate).toEqual(endDate);
@@ -101,7 +98,7 @@ describe("calculateFetchRange", () => {
       version: 1,
       lastUpdated: "2025-06-01",
       entries: [{ date: "2025-06-01", durationSeconds: 3600 }],
-    };
+    } satisfies CacheData;
     const result = calculateFetchRange(cache, yearStart, endDate);
     expect(result.needsFullFetch).toBe(false);
     // Start should be ~60 days before endDate
@@ -115,7 +112,7 @@ describe("calculateFetchRange", () => {
       version: 1,
       lastUpdated: "2025-01-10",
       entries: [{ date: "2025-01-10", durationSeconds: 3600 }],
-    };
+    } satisfies CacheData;
     const result = calculateFetchRange(cache, yearStart, earlyEnd);
     expect(result.startDate).toEqual(yearStart);
     expect(result.needsFullFetch).toBe(false);

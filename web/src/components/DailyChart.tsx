@@ -22,7 +22,7 @@ export function DailyChart({ daily }: DailyChartProps) {
               label: "Actual",
               data: last30.map((d) => Math.round(d.actualHours * 100) / 100),
               backgroundColor: last30.map((d) =>
-                d.isWeekend || d.isHoliday ? "#8b5cf640" : "#3b82f680"
+                d.isWeekend || d.isHoliday ? "#8b5cf640" : "#3b82f680",
               ),
               borderRadius: 3,
               barPercentage: 0.7,
@@ -47,11 +47,18 @@ export function DailyChart({ daily }: DailyChartProps) {
               display: true,
               position: "top",
               align: "end",
-              labels: { boxWidth: 12, boxHeight: 12, borderRadius: 2, useBorderRadius: true, padding: 16 },
+              labels: {
+                boxWidth: 12,
+                boxHeight: 12,
+                borderRadius: 2,
+                useBorderRadius: true,
+                padding: 16,
+              },
             },
             tooltip: {
               callbacks: {
-                label: (ctx) => ctx.dataset.label + ": " + ctx.parsed.y.toFixed(1) + "h",
+                label: (ctx) =>
+                  ctx.dataset.label + ": " + ctx.parsed.y?.toFixed(1) + "h",
               },
             },
           },

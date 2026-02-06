@@ -47,11 +47,18 @@ export function WeeklyCharts({ weekly }: WeeklyChartsProps) {
                   display: true,
                   position: "top",
                   align: "end",
-                  labels: { boxWidth: 12, boxHeight: 12, borderRadius: 2, useBorderRadius: true, padding: 16 },
+                  labels: {
+                    boxWidth: 12,
+                    boxHeight: 12,
+                    borderRadius: 2,
+                    useBorderRadius: true,
+                    padding: 16,
+                  },
                 },
                 tooltip: {
                   callbacks: {
-                    label: (ctx) => ctx.dataset.label + ": " + ctx.parsed.y.toFixed(1) + "h",
+                    label: (ctx) =>
+                      ctx.dataset.label + ": " + ctx.parsed.y?.toFixed(1) + "h",
                   },
                 },
               },
@@ -90,7 +97,10 @@ export function WeeklyCharts({ weekly }: WeeklyChartsProps) {
               plugins: {
                 tooltip: {
                   callbacks: {
-                    label: (ctx) => (ctx.parsed.y >= 0 ? "+" : "") + ctx.parsed.y.toFixed(1) + "h",
+                    label: (ctx) =>
+                      ((ctx.parsed.y ?? -1) >= 0 ? "+" : "") +
+                      ctx.parsed.y?.toFixed(1) +
+                      "h",
                   },
                 },
               },
@@ -98,7 +108,10 @@ export function WeeklyCharts({ weekly }: WeeklyChartsProps) {
                 x: { ticks: { maxRotation: 0, autoSkip: true, maxTicksLimit: 12 } },
                 y: {
                   ticks: {
-                    callback: (v) => ((v as number) >= 0 ? "+" : "") + parseFloat((v as number).toFixed(1)) + "h",
+                    callback: (v) =>
+                      ((v as number) >= 0 ? "+" : "") +
+                      parseFloat((v as number).toFixed(1)) +
+                      "h",
                   },
                   grid: {
                     color: (ctx) => (ctx.tick.value === 0 ? "#ffffff20" : "#1e1e2e"),

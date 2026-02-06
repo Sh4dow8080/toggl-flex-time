@@ -7,7 +7,20 @@ interface MonthlyChartsProps {
   weekly: JsonWeekOutput[];
 }
 
-const MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const MONTH_NAMES = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+];
 
 export function MonthlyCharts({ monthlyTrend, weekly }: MonthlyChartsProps) {
   const labels = monthlyTrend.periods.map((p) => p.label);
@@ -43,14 +56,18 @@ export function MonthlyCharts({ monthlyTrend, weekly }: MonthlyChartsProps) {
                 datasets: [
                   {
                     label: "Actual",
-                    data: labels.map((l) => Math.round((monthlyActual[l] || 0) * 100) / 100),
+                    data: labels.map(
+                      (l) => Math.round((monthlyActual[l] || 0) * 100) / 100,
+                    ),
                     backgroundColor: "#3b82f680",
                     borderRadius: 4,
                     barPercentage: 0.6,
                   },
                   {
                     label: "Required",
-                    data: labels.map((l) => Math.round((monthlyRequired[l] || 0) * 100) / 100),
+                    data: labels.map(
+                      (l) => Math.round((monthlyRequired[l] || 0) * 100) / 100,
+                    ),
                     backgroundColor: "#ffffff10",
                     borderColor: "#ffffff20",
                     borderWidth: 1,
@@ -68,11 +85,18 @@ export function MonthlyCharts({ monthlyTrend, weekly }: MonthlyChartsProps) {
                     display: true,
                     position: "top",
                     align: "end",
-                    labels: { boxWidth: 12, boxHeight: 12, borderRadius: 2, useBorderRadius: true, padding: 16 },
+                    labels: {
+                      boxWidth: 12,
+                      boxHeight: 12,
+                      borderRadius: 2,
+                      useBorderRadius: true,
+                      padding: 16,
+                    },
                   },
                   tooltip: {
                     callbacks: {
-                      label: (ctx) => ctx.dataset.label + ": " + ctx.parsed.y.toFixed(1) + "h",
+                      label: (ctx) =>
+                        ctx.dataset.label + ": " + ctx.parsed.y?.toFixed(1) + "h",
                     },
                   },
                 },
@@ -110,17 +134,24 @@ export function MonthlyCharts({ monthlyTrend, weekly }: MonthlyChartsProps) {
                 plugins: {
                   tooltip: {
                     callbacks: {
-                      label: (ctx) => (ctx.parsed.y >= 0 ? "+" : "") + ctx.parsed.y.toFixed(1) + "h",
+                      label: (ctx) =>
+                        ((ctx.parsed.y ?? 0) >= 0 ? "+" : "") +
+                        ctx.parsed.y?.toFixed(1) +
+                        "h",
                     },
                   },
                 },
                 scales: {
                   y: {
                     ticks: {
-                      callback: (v) => ((v as number) >= 0 ? "+" : "") + parseFloat((v as number).toFixed(1)) + "h",
+                      callback: (v) =>
+                        ((v as number) >= 0 ? "+" : "") +
+                        parseFloat((v as number).toFixed(1)) +
+                        "h",
                     },
                     grid: {
-                      color: (ctx) => (ctx.tick.value === 0 ? "#ffffff20" : "#1e1e2e"),
+                      color: (ctx) =>
+                        ctx.tick.value === 0 ? "#ffffff20" : "#1e1e2e",
                     },
                   },
                 },
@@ -148,10 +179,12 @@ export function MonthlyCharts({ monthlyTrend, weekly }: MonthlyChartsProps) {
                 <tr key={p.label}>
                   <td>{p.label}</td>
                   <td className={p.delta >= 0 ? "positive" : "negative"}>
-                    {sign}{p.delta.toFixed(1)}h
+                    {sign}
+                    {p.delta.toFixed(1)}h
                   </td>
                   <td className={p.cumulative >= 0 ? "positive" : "negative"}>
-                    {csign}{p.cumulative.toFixed(1)}h
+                    {csign}
+                    {p.cumulative.toFixed(1)}h
                   </td>
                 </tr>
               );

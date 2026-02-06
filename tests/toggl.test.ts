@@ -18,9 +18,7 @@ describe("simplifyEntries", () => {
   test("converts time entries to simplified format", () => {
     const entries = [makeEntry({ duration: 3600 })];
     const result = simplifyEntries(entries);
-    expect(result).toEqual([
-      { date: "2025-01-06", durationSeconds: 3600 },
-    ]);
+    expect(result).toEqual([{ date: "2025-01-06", durationSeconds: 3600 }]);
   });
 
   test("filters out running entries (negative duration)", () => {
@@ -30,7 +28,7 @@ describe("simplifyEntries", () => {
     ];
     const result = simplifyEntries(entries);
     expect(result).toHaveLength(1);
-    expect(result[0].durationSeconds).toBe(3600);
+    expect(result[0]!.durationSeconds).toBe(3600);
   });
 
   test("extracts date from start timestamp", () => {
@@ -38,7 +36,7 @@ describe("simplifyEntries", () => {
       makeEntry({ start: "2025-03-15T14:30:00+00:00", duration: 1800 }),
     ];
     const result = simplifyEntries(entries);
-    expect(result[0].date).toBe("2025-03-15");
+    expect(result[0]!.date).toBe("2025-03-15");
   });
 
   test("returns empty array for empty input", () => {

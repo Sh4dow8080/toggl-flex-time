@@ -22,7 +22,7 @@ ChartJS.register(
   PointElement,
   Filler,
   Tooltip,
-  Legend
+  Legend,
 );
 
 // Chart.js global defaults (matching original dashboard)
@@ -36,12 +36,19 @@ ChartJS.defaults.plugins.tooltip.borderColor = "#2a2a3a";
 ChartJS.defaults.plugins.tooltip.borderWidth = 1;
 ChartJS.defaults.plugins.tooltip.cornerRadius = 6;
 ChartJS.defaults.plugins.tooltip.padding = 10;
-ChartJS.defaults.plugins.tooltip.titleFont = { family: "'SF Mono', monospace", size: 11, weight: "bold" };
-ChartJS.defaults.plugins.tooltip.bodyFont = { family: "'SF Mono', monospace", size: 11 };
+ChartJS.defaults.plugins.tooltip.titleFont = {
+  family: "'SF Mono', monospace",
+  size: 11,
+  weight: "bold",
+};
+ChartJS.defaults.plugins.tooltip.bodyFont = {
+  family: "'SF Mono', monospace",
+  size: 11,
+};
 ChartJS.defaults.scale.grid = { color: "#1e1e2e", lineWidth: 1 };
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <App />
-  </StrictMode>
+  </StrictMode>,
 );

@@ -46,16 +46,25 @@ function computeEndDate(includeToday: boolean): Date {
   return endDate;
 }
 
-function buildDashboardData(params: WebDashboardParams, includeToday: boolean): DashboardData {
+function buildDashboardData(
+  params: WebDashboardParams,
+  includeToday: boolean,
+): DashboardData {
   const { startDate, allEntries, hoursPerDay, hoursPerWeek, holidays } = params;
 
   const endDate = computeEndDate(includeToday);
   const startStr = formatDate(startDate);
   const endStr = formatDate(endDate);
-  const entries = allEntries.filter(e => e.date >= startStr && e.date <= endStr);
+  const entries = allEntries.filter((e) => e.date >= startStr && e.date <= endStr);
 
   const weeks = getWeekRanges(startDate, endDate, entries);
-  const result = calculateFlexTime(startDate, endDate, entries, hoursPerDay, holidays);
+  const result = calculateFlexTime(
+    startDate,
+    endDate,
+    entries,
+    hoursPerDay,
+    holidays,
+  );
 
   const summary: JsonSummaryOutput = {
     period: { start: formatDate(startDate), end: formatDate(endDate) },
@@ -83,7 +92,12 @@ async function findAvailablePort(startPort: number): Promise<number> {
   let port = startPort;
   while (port < startPort + 100) {
     try {
-      const server = Bun.serve({ port, fetch() { return new Response(); } });
+      const server = Bun.serve({
+        port,
+        fetch() {
+          return new Response();
+        },
+      });
       server.stop(true);
       return port;
     } catch {
