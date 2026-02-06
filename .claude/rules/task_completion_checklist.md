@@ -1,6 +1,6 @@
 ---
 description: Verify before marking work done
-globs: "**/*.ts"
+globs: "**/*.ts,**/*.tsx"
 ---
 
 Before completing a task:

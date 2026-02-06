@@ -1,6 +1,6 @@
 ---
 description: Build, test, and run commands for the project
-globs: "**/*.ts"
+globs: "**/*.ts,**/*.tsx"
 ---
 
 ## Run
@@ -18,6 +18,13 @@ bun run src/index.ts --json       # JSON output
 ```sh
 bun test                          # Run all tests
 bun test tests/calculator.test.ts # Run a specific test file
+```
+
+## Web Dashboard (React + Vite)
+
+```sh
+cd web && bun install && bunx vite dev  # Dev server
+bun run build:web                       # Build + embed into CLI
 ```
 
 ## Compile

@@ -9,7 +9,12 @@
       "Read(**/*.lcov)",
       "Read(**/flex-darwin-x64)",
       "Read(**/flex-windows-x64.exe)",
-      "Read(**/*.old)"
+      "Read(**/*.old)",
+      "Read(**/src/generated/**)",
+      "Read(**/*.min.js)",
+      "Read(**/*.min.css)",
+      "Read(**/*.js.map)",
+      "Read(**/*.css.map)"
     ]
   }
 }
