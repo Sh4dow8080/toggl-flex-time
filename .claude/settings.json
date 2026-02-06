@@ -1,1 +1,15 @@
-{}
+{
+  "permissions": {
+    "deny": [
+      "Read(**/node_modules/**)",
+      "Read(**/dist/**)",
+      "Read(**/out/**)",
+      "Read(**/coverage/**)",
+      "Read(**/*.tgz)",
+      "Read(**/*.lcov)",
+      "Read(**/flex-darwin-x64)",
+      "Read(**/flex-windows-x64.exe)",
+      "Read(**/*.old)"
+    ]
+  }
+}
