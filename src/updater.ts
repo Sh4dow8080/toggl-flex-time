@@ -127,7 +127,17 @@ export async function performUpdate(): Promise<void> {
   const oldPath = execPath + ".old";
 
   // Write new binary
-  await Bun.write(newPath, binary);
+  try {
+    await Bun.write(newPath, binary);
+  } catch (err) {
+    if (err instanceof Error && err.message.includes("EACCES")) {
+      throw new Error(
+        `Permission denied writing to ${newPath}\n` +
+          `The binary is in a protected directory. Try: sudo ${execPath} --update`
+      );
+    }
+    throw err;
+  }
 
   // Make executable on macOS/Linux
   if (process.platform !== "win32") {
