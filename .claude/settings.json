@@ -14,7 +14,9 @@
       "Read(**/*.min.js)",
       "Read(**/*.min.css)",
       "Read(**/*.js.map)",
-      "Read(**/*.css.map)"
+      "Read(**/*.css.map)",
+      "Read(**/.cache/**)",
+      "Read(**/.idea/**)"
     ]
   }
 }

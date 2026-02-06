@@ -1,5 +1,5 @@
 ---
-description: Build, test, and run commands for the project
+description: Build, test, and run commands for toggl-flex-time
 globs: "**/*.ts,**/*.tsx"
 ---
 
