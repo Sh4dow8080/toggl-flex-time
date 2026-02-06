@@ -30,14 +30,30 @@ Download `flex-windows-x64.exe` from the releases page and place it somewhere on
 
 ## Setup
 
-Create a `config.json` file in the data directory:
+Run the interactive setup wizard:
+
+```bash
+flex setup
+```
+
+It walks you through:
+
+1. **Toggl API token** — masked input, validated against the Toggl API
+2. **Workspace selection** — auto-fetched from your account
+3. **Working hours** — hours per day and per week
+4. **Custom holidays** — add one at a time, with format validation (`YYYY-MM-DD` or `*-MM-DD` for recurring)
+
+The config is saved to:
 
 | Platform | Location |
 |---|---|
 | macOS / Linux | `~/.config/toggl-flex-time/config.json` |
 | Windows | `%APPDATA%\toggl-flex-time\config.json` |
 
-The directory is created automatically on first run.
+<details>
+<summary>Manual config (alternative)</summary>
+
+You can also create `config.json` manually:
 
 ```json
 {
@@ -47,7 +63,7 @@ The directory is created automatically on first run.
   "hoursPerDay": 7,
   "customHolidays": [
     "2024-12-24",
-    "2024-12-31"
+    "*-12-24"
   ]
 }
 ```
@@ -56,7 +72,9 @@ The directory is created automatically on first run.
 - **`workspaceId`** — Your Toggl workspace ID (visible in the URL when logged in)
 - **`hoursPerWeek`** — Your contracted weekly hours
 - **`hoursPerDay`** — Your contracted daily hours
-- **`customHolidays`** — Additional days off not covered by Danish public holidays (format: `YYYY-MM-DD`)
+- **`customHolidays`** — Additional days off not covered by Danish public holidays. Use `YYYY-MM-DD` for specific years or `*-MM-DD` for every year.
+
+</details>
 
 The cache (`cache.json`) is stored in the same directory automatically.
 

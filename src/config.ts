@@ -10,7 +10,7 @@ export interface Config {
   customHolidays: string[];
 }
 
-const CONFIG_FILE = "config.json";
+export const CONFIG_FILE = "config.json";
 
 function validateConfig(config: unknown): config is Config {
   if (typeof config !== "object" || config === null) {
@@ -57,7 +57,7 @@ export function loadConfig(): Config {
   if (!existsSync(configPath)) {
     throw new Error(
       `Config file not found: ${configPath}\n` +
-        `Please create a config.json file at that location (see config.json.example)`
+        `Run 'flex setup' to create one interactively, or see config.json.example`
     );
   }
 

@@ -36,6 +36,7 @@ import {
 } from "./weeks";
 import { VERSION } from "./version";
 import { checkForUpdate, performUpdate, cleanupOldBinary } from "./updater";
+import { runSetup } from "./setup";
 
 interface MainOptions {
   weekly: boolean;
@@ -354,40 +355,48 @@ const program = new Command()
   .option("--web", "Open web dashboard in browser")
   .option("--include-today", "Include today in the calculation")
   .option("-t, --trend [granularity]", "Show trend chart (optional: weekly or monthly)")
-  .option("--update", "Update to the latest version")
-  .action(async (rawOpts) => {
-    if (rawOpts.update) {
-      try {
-        await performUpdate();
-        process.exit(0);
-      } catch (err) {
-        console.error(`${colors.red}Update failed: ${err instanceof Error ? err.message : err}${colors.reset}`);
-        process.exit(1);
-      }
-    }
+  .option("--update", "Update to the latest version");
 
-    const trendValue = rawOpts.trend;
-    const showTrend = trendValue !== undefined;
-    const trendGranularity: "weekly" | "monthly" =
-      trendValue === "monthly" ? "monthly" : "weekly";
-
-    const opts: MainOptions = {
-      weekly: rawOpts.weekly ?? false,
-      json: rawOpts.json ?? false,
-      web: rawOpts.web ?? false,
-      includeToday: rawOpts.includeToday ?? false,
-      showTrend,
-      trendGranularity,
-    };
-
-    const updateCheck = checkForUpdate();
-    await main(opts);
-    const update = await updateCheck;
-    if (update) {
-      console.log(
-        `\n${colors.yellow}Update available: v${VERSION} → v${update.version}. Run with --update to install.${colors.reset}`
-      );
-    }
+program
+  .command("setup")
+  .description("Interactive setup wizard to create config.json")
+  .action(async () => {
+    await runSetup();
   });
+
+program.action(async (rawOpts) => {
+  if (rawOpts.update) {
+    try {
+      await performUpdate();
+      process.exit(0);
+    } catch (err) {
+      console.error(`${colors.red}Update failed: ${err instanceof Error ? err.message : err}${colors.reset}`);
+      process.exit(1);
+    }
+  }
+
+  const trendValue = rawOpts.trend;
+  const showTrend = trendValue !== undefined;
+  const trendGranularity: "weekly" | "monthly" =
+    trendValue === "monthly" ? "monthly" : "weekly";
+
+  const opts: MainOptions = {
+    weekly: rawOpts.weekly ?? false,
+    json: rawOpts.json ?? false,
+    web: rawOpts.web ?? false,
+    includeToday: rawOpts.includeToday ?? false,
+    showTrend,
+    trendGranularity,
+  };
+
+  const updateCheck = checkForUpdate();
+  await main(opts);
+  const update = await updateCheck;
+  if (update) {
+    console.log(
+      `\n${colors.yellow}Update available: v${VERSION} → v${update.version}. Run with --update to install.${colors.reset}`
+    );
+  }
+});
 
 await program.parseAsync(process.argv);

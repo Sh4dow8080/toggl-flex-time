@@ -16,13 +16,13 @@ export interface SimplifiedEntry {
   durationSeconds: number;
 }
 
-const TOGGL_API_BASE = "https://api.track.toggl.com/api/v9";
+export const TOGGL_API_BASE = "https://api.track.toggl.com/api/v9";
 
 /**
  * Create the Basic Auth header value for Toggl API.
  * Uses API token as username and "api_token" as password.
  */
-function createAuthHeader(apiToken: string): string {
+export function createAuthHeader(apiToken: string): string {
   const credentials = `${apiToken}:api_token`;
   const encoded = Buffer.from(credentials).toString("base64");
   return `Basic ${encoded}`;
